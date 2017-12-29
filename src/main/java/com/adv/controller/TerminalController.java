@@ -60,7 +60,7 @@ public class TerminalController {
 	**/
 	@RequestMapping(value="getTerminalList",method = RequestMethod.GET)
 	@ResponseBody
-	public DataWrapper<List<Terminal>> add() {
+	public DataWrapper<List<Terminal>> getTerminalList() {
 
 		return terminalService.getTerminalList();
 	}
