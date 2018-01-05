@@ -23,5 +23,5 @@ dist/
 nbdist/
 .nb-gradle/
 
-#db config
-src/main/resources/
+### db config ###
+src/main/resources
