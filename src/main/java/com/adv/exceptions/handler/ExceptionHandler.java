@@ -14,7 +14,7 @@ public class ExceptionHandler {
 	@org.springframework.web.bind.annotation.ExceptionHandler(RuntimeException.class)
 	@ResponseBody
     public DataWrapper<String> exceptionProcess(RuntimeException ex) {
-		
+		ex.printStackTrace();
         return getReturns(1, ex.getMessage());
     }
 	
