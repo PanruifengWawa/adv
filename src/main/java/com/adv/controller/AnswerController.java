@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.adv.models.BgImage;
+import com.adv.models.Terminal;
 import com.adv.service.AnswerService;
 import com.adv.utils.DataWrapper;
 
@@ -113,5 +114,86 @@ public class AnswerController {
 			) {
 		return answerService.getBGImage();
 	}
+	
+	
+	
+	/**
+	* @api {post} api/answer/refresh 刷新抢答
+	* @apiName answer-refresh
+	* @apiGroup answer
+	* @apiDescription 用于“抢答管理页面”
+	*
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": null,
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "参数为空",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="refresh",method = RequestMethod.POST)
+	@ResponseBody
+	public DataWrapper<Void> refresh(
+			) {
+		return answerService.refresh();
+	}
+	
+	
+	/**
+	* @api {post} api/answer/getAnswerResult 获取抢答结果
+	* @apiName answer-getAnswerResult
+	* @apiGroup answer
+	* @apiDescription 用于“抢答管理”页面
+	*
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": {
+    *				"mac": "123",
+    *				"name": "aa"
+    *		},
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "终端不存在",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="getAnswerResult",method = RequestMethod.GET)
+	@ResponseBody
+	public DataWrapper<Terminal> getAnswerResult(
+			) {
+		return answerService.getAnswerResult();
+	}
+	
+	
+	
 
 }

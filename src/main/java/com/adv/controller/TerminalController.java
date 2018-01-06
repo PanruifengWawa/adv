@@ -37,7 +37,9 @@ public class TerminalController {
     *		"data": [
     *			{
     *				"mac": "123", //终端mac地址
-    *				"name": "aa" //终端名称
+    *				"name": "aa", //终端名称
+    *				"state": 0,   //0-未连接，1-已连接
+    *				"page": 0 //0-未知页面，1-轮播页面，2-投票页面，3-抢答页面，4-微信墙页面
     *			}
     *		],
     *		"numberPerPage": 0,

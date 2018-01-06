@@ -11,8 +11,12 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.adv.models.Terminal;
+import com.adv.parameters.Parameters;
 import com.adv.service.TerminalService;
 
 
@@ -29,9 +33,20 @@ public class TerminalServer  {
 	
 	private Session session;
 	private String mac;
+	
+	private Integer page;
+	
  
   
-  
+
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
 	public static void setApplicationContext(ApplicationContext applicationContext) {
 		TerminalServer.applicationContext = applicationContext;
 	}
@@ -54,10 +69,46 @@ public class TerminalServer  {
    
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		
+		this.handleMessage(message);
 	}
   
   
+	public void handleMessage(String message) {
+		System.out.println(message);
+		Integer code = 0;
+		JSONObject json = null;
+		try {
+			json = new JSONObject(message);
+			code = json.getInt("code");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		switch (code) {
+		case 1:
+			try {
+				this.page = json.getJSONObject("data").getInt("page");
+				AdminServer.sendMessageToAll(message);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		case 7:
+			if (Parameters.canAnswer == 1) {
+				if (Parameters.answer.get(mac) == null) {
+					Parameters.answer.put(mac, System.currentTimeMillis());
+				}
+				
+			}
+			break;
+		default:
+			break;
+		}
+		
+		
+	}
 
 
 	@OnError
@@ -99,6 +150,7 @@ public class TerminalServer  {
 				if (terminalService.save(mac, "")) { //保存该终端信息
 					this.mac = mac;
 					this.session = session;
+					this.page = 0;
 					terminals.put(mac, this); //保存连接
 				} else {//保存终端信息失败，关闭终端
 					flag = true;
@@ -121,16 +173,40 @@ public class TerminalServer  {
 		System.out.println(terminals);
 	}
 
-//	public void sendMessage(String message) {
-//		try {
-//			this.session.getBasicRemote().sendText(message);
-//			} catch (Exception e) {
-//			// TODO: handle exception
-//				e.printStackTrace();
-//			}
-//     
-//      //this.session.getAsyncRemote().sendText(message);
-//	}
+	public static void getTerminalState(Terminal terminal) {
+		TerminalServer terminalServer = terminals.get(terminal.getMac());
+		if (terminalServer != null) {
+			terminal.setState(1);
+			terminal.setPage(terminalServer.getPage());
+		} else {
+			terminal.setState(0);
+			terminal.setPage(0);
+		}
+	}
+	public void sendMessage(String message) {
+		try {
+			this.session.getBasicRemote().sendText(message);
+			} catch (Exception e) {
+			// TODO: handle exception
+				e.printStackTrace();
+			}
+     
+      //this.session.getAsyncRemote().sendText(message);
+	}
+	
+	public static void sendMessageToOne(String mac, String message) {
+		TerminalServer terminalServer = terminals.get(mac);
+		if (terminalServer != null) {
+			terminalServer.sendMessage(message);
+		}
+	}
+	
+	public static void sendMessageToAll(String message) {
+		for(TerminalServer terminalServer: terminals.values()) {
+			terminalServer.sendMessage(message);
+		}
+		
+	}
   
   
  

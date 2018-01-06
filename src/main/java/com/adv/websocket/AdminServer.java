@@ -9,7 +9,11 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
+
+import com.adv.parameters.Parameters;
 
 
 @ServerEndpoint(value = "/admin")
@@ -40,7 +44,7 @@ public class AdminServer  {
    
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		
+		this.handleMessage(message);
 	}
   
   
@@ -64,11 +68,54 @@ public class AdminServer  {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-     
+	}
+	
+	public static void sendMessageToAll(String message) {
+		for(AdminServer admin: admins) {
+			admin.sendMessage(message);
+		}
 	}
   
   
  
+	public void handleMessage(String message) {
+		System.out.println(message);
+		Integer code = 0;
+		JSONObject json = null;
+		try {
+			json = new JSONObject(message);
+			code = json.getInt("code");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		switch (code) {
+		case 2:
+			try {
+				JSONArray macs = json.getJSONObject("data").getJSONArray("macs");
+				for(int i = 0; i < macs.length(); i ++) {
+					String mac = macs.getString(i);
+					TerminalServer.sendMessageToOne(mac, message);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		case 5:
+			Parameters.canAnswer = 1;
+			Parameters.answer.clear();
+			TerminalServer.sendMessageToAll(message);
+			break;
+			
+		case 6:
+			Parameters.canAnswer = 0;
+			TerminalServer.sendMessageToAll(message);
+			break;
+		default:
+			break;
+		}
+	}
 
   
 }

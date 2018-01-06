@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.adv.models.BgImage;
 import com.adv.models.Message;
+import com.adv.parameters.Parameters;
 import com.adv.service.WXWallService;
 import com.adv.utils.DataWrapper;
 
@@ -156,6 +157,46 @@ public class WXWallController {
 	
 	
 	/**
+	* @api {post} api/wxwall/getCheckState 获取“是否审核”
+	* @apiName wxwall-getCheckState
+	* @apiGroup wxwall
+	* @apiDescription 用于“微信墙管理页面”
+	*
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": 1,
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "参数为空",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="getCheckState",method = RequestMethod.GET)
+	@ResponseBody
+	public DataWrapper<Integer> getCheckState(
+			) {
+		DataWrapper<Integer> dataWrapper = new DataWrapper<Integer>();
+		dataWrapper.setData(Parameters.wxWallMessageState);
+		return dataWrapper;
+	}
+	
+	
+	
+	/**
 	* @api {post} api/wxwall/publish 发弹幕
 	* @apiName wxwall-publish
 	* @apiGroup wxwall
@@ -293,6 +334,49 @@ public class WXWallController {
 			) {
 
 		return wXWallService.successMessage(messageIds);
+	}
+	
+	
+	
+	
+	/**
+	* @api {post} api/wxwall/message/delete 批量删除弹幕
+	* @apiName wxwall-delete
+	* @apiGroup wxwall
+	* @apiDescription 用于“微信墙页面”，请用json格式请求
+	*
+	* @apiParamExample {json} Request-Example:
+	* [1, 2, 3, 4]
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": null,
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "参数为空",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="message/delete",method = RequestMethod.POST)
+	@ResponseBody
+	public DataWrapper<Void> delete(
+			@RequestBody Long[] messageIds
+			) {
+
+		return wXWallService.deleteMessage(messageIds);
 	}
 
 }

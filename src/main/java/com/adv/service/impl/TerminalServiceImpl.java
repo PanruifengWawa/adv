@@ -10,6 +10,8 @@ import com.adv.models.Terminal;
 import com.adv.repository.TerminalRepository;
 import com.adv.service.TerminalService;
 import com.adv.utils.DataWrapper;
+import com.adv.utils.JSONUtil;
+import com.adv.utils.WSMessage;
 import com.adv.websocket.TerminalServer;
 
 @Service
@@ -22,6 +24,11 @@ public class TerminalServiceImpl implements TerminalService {
 	public DataWrapper<List<Terminal>> getTerminalList() {
 		DataWrapper<List<Terminal>> dataWrapper = new DataWrapper<List<Terminal>>();
 		List<Terminal> list = terminalRepository.findAll();
+		for(Terminal terminal: list) {
+			TerminalServer.getTerminalState(terminal);
+		}
+		
+		
 		dataWrapper.setData(list);
 		return dataWrapper;
 	}
@@ -78,6 +85,16 @@ public class TerminalServiceImpl implements TerminalService {
 			e.printStackTrace();
 			throw new MyException("数据库错误");
 		}
+		
+		try {
+			WSMessage<Terminal> wsMessage = new WSMessage<Terminal>();
+			wsMessage.setCode(3);
+			wsMessage.setData(terminal);
+			TerminalServer.sendMessageToOne(mac, JSONUtil.obj2Json(wsMessage));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		DataWrapper<Terminal> dataWrapper = new DataWrapper<Terminal>();
 		dataWrapper.setData(terminal);
 		return dataWrapper;

@@ -1,5 +1,6 @@
 package com.adv.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,9 @@ import com.adv.repository.MessageRepository;
 import com.adv.repository.TerminalRepository;
 import com.adv.service.WXWallService;
 import com.adv.utils.DataWrapper;
+import com.adv.utils.JSONUtil;
+import com.adv.utils.WSMessage;
+import com.adv.websocket.TerminalServer;
 
 @Service
 public class WXWallServiceImpl implements WXWallService {
@@ -81,6 +85,21 @@ public class WXWallServiceImpl implements WXWallService {
 		} catch (Exception e) {
 			throw new MyException("数据库错误");
 		}
+		
+		if (message.getState() == Parameters.wxWallMessageStateSuccess) {
+			try {
+				List<Message> messages = new ArrayList<>();
+				messages.add(message);
+				WSMessage<List<Message>> wsMessage = new WSMessage<List<Message>>();
+				wsMessage.setCode(9);
+				wsMessage.setData(messages);
+				TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		DataWrapper<Message> dataWrapper = new DataWrapper<Message>();
 		dataWrapper.setData(message);
 		return dataWrapper;
@@ -102,6 +121,10 @@ public class WXWallServiceImpl implements WXWallService {
 	@Override
 	public DataWrapper<List<Message>> successMessage(Long[] messageIds) {
 		List<Message> list = messageRepository.findByIdInAndState(Arrays.asList(messageIds), Parameters.wxWallMessageStateFail);
+		if (list == null || list.size() <= 0) {
+			throw new MyException("弹幕不存在");
+		}
+		
 		for(Message message: list) {
 			message.setState(Parameters.wxWallMessageStateSuccess);
 		}
@@ -109,6 +132,16 @@ public class WXWallServiceImpl implements WXWallService {
 			messageRepository.save(list);
 		} catch (Exception e) {
 			throw new MyException("数据库错误");
+		}
+		
+		
+		try {
+			WSMessage<List<Message>> wsMessage = new WSMessage<List<Message>>();
+			wsMessage.setCode(9);
+			wsMessage.setData(list);
+			TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		DataWrapper<List<Message>> dataWrapper = new DataWrapper<List<Message>>();
@@ -122,6 +155,19 @@ public class WXWallServiceImpl implements WXWallService {
 		BgImage bgImage = bgImageRepository.findByType(Parameters.wxWallBgImageType);
 		DataWrapper<BgImage> dataWrapper = new DataWrapper<BgImage>();
 		dataWrapper.setData(bgImage);
+		return dataWrapper;
+	}
+
+	@Override
+	public DataWrapper<Void> deleteMessage(Long[] messageIds) {
+		// TODO Auto-generated method stub
+		try {
+			messageRepository.deleteByIds(Arrays.asList(messageIds));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MyException("数据库错误");
+		}
+		DataWrapper<Void> dataWrapper = new DataWrapper<Void>();
 		return dataWrapper;
 	}
 

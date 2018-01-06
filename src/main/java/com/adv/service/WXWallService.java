@@ -19,4 +19,6 @@ public interface WXWallService {
 	DataWrapper<List<Message>> successMessage(Long[] messageIds);
 
 	DataWrapper<BgImage> getBGImage();
+	
+	DataWrapper<Void> deleteMessage(Long[] messageIds);
 }

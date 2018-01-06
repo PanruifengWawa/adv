@@ -21,6 +21,9 @@ import com.adv.repository.VoteRecordRepository;
 import com.adv.repository.VoteRepository;
 import com.adv.service.VoteItemService;
 import com.adv.utils.DataWrapper;
+import com.adv.utils.JSONUtil;
+import com.adv.utils.WSMessage;
+import com.adv.websocket.TerminalServer;
 
 @Service
 public class VoteItemServiceImpl implements VoteItemService {
@@ -176,6 +179,17 @@ public class VoteItemServiceImpl implements VoteItemService {
 			voteRecordRepository.save(Arrays.asList(voteRecords));
 		} catch (Exception e) {
 			throw new MyException("数据库错误");
+		}
+		
+		
+		try {
+			WSMessage<Long> wsMessage = new WSMessage<Long>();
+			wsMessage.setCode(4);
+			wsMessage.setData(voteId);
+
+			TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		DataWrapper<Void> dataWrapper = new DataWrapper<Void>();
