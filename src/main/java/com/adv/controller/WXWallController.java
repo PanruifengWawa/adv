@@ -157,7 +157,7 @@ public class WXWallController {
 	
 	
 	/**
-	* @api {post} api/wxwall/getCheckState 获取“是否审核”
+	* @api {get} api/wxwall/getCheckState 获取“是否审核”
 	* @apiName wxwall-getCheckState
 	* @apiGroup wxwall
 	* @apiDescription 用于“微信墙管理页面”

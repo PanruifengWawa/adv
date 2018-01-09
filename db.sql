@@ -3,7 +3,7 @@ use adv;
 
 drop table if exists terminal;
 create table terminal(
-mac varchar(512) primary key,
+mac varchar(128) primary key,
 name varchar(512)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -93,4 +93,8 @@ begin
 	update vote_item set result = result - old.vote_number where id = old.vote_item_id;
 end||
 delimiter ;
+
+
+-- v2
+alter table terminal add column src varchar(512);
 

@@ -24,6 +24,9 @@ public interface VoteItemService {
 	DataWrapper<Void> refreshVoteItem(Long voteId);
 	
 	
+	DataWrapper<VoteItem> updateResult(Long voteItemId, Integer result);
+	
+	
 	
 	
 }

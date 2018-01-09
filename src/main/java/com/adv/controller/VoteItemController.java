@@ -299,4 +299,56 @@ public class VoteItemController {
 		return voteItemService.refreshVoteItem(voteId);
 	}
 
+	
+	
+	
+	
+	/**
+	* @api {post} api/vote/{voteId}/voteItem/updateResult 修改投票结果
+	* @apiName voteItem-updateResult
+	* @apiGroup vote-voteItem
+	* @apiDescription 用于“投票页面”
+	*
+	* @apiParam {Long} voteId * 投票项目id（必须，路径参数）
+	* @apiParam {Long} voteItemId * 投票选项id（必须）
+	* @apiParam {String} result * 投票选项结果（必须，大于等于0）
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": {
+    *			"id": 1,
+    *			"name": "aa",
+    *			"imgSrc": "xxxx",
+    *			"result": 0,
+    *			"voteId": 10
+    *		},
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "参数为空",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="{voteId}/voteItem/updateResult",method = RequestMethod.POST)
+	@ResponseBody
+	public DataWrapper<VoteItem> updateResult(
+			@PathVariable Long voteId,
+			@RequestParam(value="voteItemId", required=true) Long voteItemId,
+			@RequestParam(value="result", required=true) Integer result
+			) {
+
+		return voteItemService.updateResult(voteItemId, result);
+	}
 }

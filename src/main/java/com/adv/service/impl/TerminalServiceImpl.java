@@ -61,6 +61,7 @@ public class TerminalServiceImpl implements TerminalService {
 		Terminal terminal = new Terminal();
 		terminal.setMac(mac);
 		terminal.setName(name);
+		terminal.setSrc("");
 		try {
 			terminalRepository.save(terminal);
 		} catch (Exception e) {
@@ -73,12 +74,17 @@ public class TerminalServiceImpl implements TerminalService {
 
 
 	@Override
-	public DataWrapper<Terminal> update(String mac, String name) {
+	public DataWrapper<Terminal> update(String mac, String name, String src) {
 		Terminal terminal = terminalRepository.findByMac(mac);
 		if (terminal == null) {
 			throw new MyException("终端不存在");
 		}
-		terminal.setName(name);
+		if (name != null && !name.equals("")) {
+			terminal.setName(name);
+		}
+		if (src != null && !src.equals("")) {
+			terminal.setSrc(src);
+		}
 		try {
 			terminalRepository.save(terminal);
 		} catch (Exception e) {
@@ -97,6 +103,18 @@ public class TerminalServiceImpl implements TerminalService {
 		
 		DataWrapper<Terminal> dataWrapper = new DataWrapper<Terminal>();
 		dataWrapper.setData(terminal);
+		return dataWrapper;
+	}
+
+
+
+	@Override
+	public DataWrapper<Terminal> getByMac(String mac) {
+		// TODO Auto-generated method stub
+		Terminal terminal = terminalRepository.findByMac(mac);
+		DataWrapper<Terminal> dataWrapper = new DataWrapper<Terminal>();
+		dataWrapper.setData(terminal);
+		
 		return dataWrapper;
 	}
 	

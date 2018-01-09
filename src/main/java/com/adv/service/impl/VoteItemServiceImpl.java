@@ -200,6 +200,7 @@ public class VoteItemServiceImpl implements VoteItemService {
 	public DataWrapper<Void> refreshAll() {
 		try {
 			voteRecordRepository.deleteAllInBatch();
+			voteItemRepository.updateResultAll(0);
 		} catch (Exception e) {
 			throw new MyException("数据库错误");
 		}
@@ -212,12 +213,38 @@ public class VoteItemServiceImpl implements VoteItemService {
 	public DataWrapper<Void> refreshVoteItem(Long voteId) {
 		try {
 			voteRecordRepository.deleteByVoteId(voteId);
+			voteItemRepository.updateResultByVoteId(0, voteId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MyException("数据库错误");
 		}
 		
 		DataWrapper<Void> dataWrapper = new DataWrapper<Void>();
+		return dataWrapper;
+	}
+
+	@Override
+	public DataWrapper<VoteItem> updateResult(Long voteItemId, Integer result) {
+		// TODO Auto-generated method stub
+		if (result == null || result < 0) {
+			throw new MyException("修改值必须大于0");
+		}
+		
+		VoteItem voteItem = voteItemRepository.findOne(voteItemId);
+		if (voteItem == null) {
+			throw new MyException("投票选项不存在");
+		}
+		voteItem.setResult(result);
+		try {
+			voteItemRepository.save(voteItem);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MyException("数据库错误");
+		}
+		
+		
+		DataWrapper<VoteItem> dataWrapper = new DataWrapper<VoteItem>();
+		dataWrapper.setData(voteItem);
 		return dataWrapper;
 	}
 

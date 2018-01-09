@@ -38,6 +38,7 @@ public class TerminalController {
     *			{
     *				"mac": "123", //终端mac地址
     *				"name": "aa", //终端名称
+    *				"src": "xxxx", //终端图片
     *				"state": 0,   //0-未连接，1-已连接
     *				"page": 0 //0-未知页面，1-轮播页面，2-投票页面，3-抢答页面，4-微信墙页面
     *			}
@@ -69,24 +70,24 @@ public class TerminalController {
 	
 	
 	/**
-	* @api {post} api/terminal/update 修改终端名称
+	* @api {post} api/terminal/update 修改终端信息
 	* @apiName terminal-update
 	* @apiGroup terminal
 	* @apiDescription 用于“终端管理”页面
 	*
 	* @apiParam {String} mac * 设备的mac地址（必须）
-	* @apiParam {String} name * 设备的新名称（必须）
+	* @apiParam {String} name * 设备的新名称（非必须）
+	* @apiParam {String} src * 设备的图片（非必须）
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	HTTP/1.1 200 ok
 	* 	{
     *		"status": 0,
-    *		"data": [
-    *			{
+    *		"data": {
     *				"mac": "123",
-    *				"name": "aa"
-    *			}
-    *		],
+    *				"name": "aa",
+    *				"src": "xxx"
+    *		},
     *		"numberPerPage": 0,
     *		"currentPage": 0,
     *		"totalNumber": 0,
@@ -108,10 +109,11 @@ public class TerminalController {
 	@ResponseBody
 	public DataWrapper<Terminal> update(
 			@RequestParam(value="mac", required=true) String mac,
-			@RequestParam(value="name", required=true) String name
+			@RequestParam(value="name", required=false) String name,
+			@RequestParam(value="src", required=false) String src
 			
 			) {
-		return terminalService.update(mac, name);
+		return terminalService.update(mac, name, src);
 	}
 	
 	
@@ -151,6 +153,51 @@ public class TerminalController {
 			) {
 
 		return terminalService.delete(mac);
+	}
+	
+	
+	
+	/**
+	* @api {get} api/terminal/getByMac 通过mac获取终端信息
+	* @apiName terminal-getByMac
+	* @apiGroup terminal
+	* @apiDescription 用于“终端”页面
+	*
+	* @apiParam {String} mac * 设备的mac地址（必须）
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data":{
+    *			"mac": "123",
+    *			"name": "aa",
+    *			"src": "xxx"
+    *		},
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "终端不存在",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="getByMac",method = RequestMethod.GET)
+	@ResponseBody
+	public DataWrapper<Terminal> getByMac(
+			@RequestParam(value="mac", required=true) String mac
+			) {
+
+		return terminalService.getByMac(mac);
 	}
 	
 	
