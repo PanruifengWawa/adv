@@ -58,7 +58,11 @@ public class TerminalServiceImpl implements TerminalService {
 	@Override
 	public boolean save(String mac, String name) {
 		
-		Terminal terminal = new Terminal();
+		Terminal terminal = terminalRepository.findByMac(mac);
+		if (terminal != null) {
+			return true;
+		}
+		terminal = new Terminal();
 		terminal.setMac(mac);
 		terminal.setName(name);
 		terminal.setSrc("");

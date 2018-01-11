@@ -98,3 +98,12 @@ delimiter ;
 -- v2
 alter table terminal add column src varchar(512);
 
+
+-- v3 
+create table version(
+id serial primary key,
+version_id varchar(256),
+src varchar(512) not null,
+app_name varchar(128) not null,
+description text
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
