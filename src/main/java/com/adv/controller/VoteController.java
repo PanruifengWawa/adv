@@ -218,4 +218,55 @@ public class VoteController {
 
 		return voteService.delete(voteId);
 	}
+	
+	
+	
+	
+	
+	/**
+	* @api {post} api/vote/update 修改投票项目
+	* @apiName vote-update
+	* @apiGroup vote
+	* @apiDescription 用于“投票页面”
+	*
+	* @apiParam {Long} voteId * 投票项目id（必须）
+	* @apiParam {Integer} allCanVoteNumber * 终端可投总票数（非必须）
+	* @apiParam {Integer} eachItemCanVoteNumber * 终端每项最多可投票数（非必须）
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+    *		"status": 0,
+    *		"data": {
+    *			"id": 1,
+    *			"name": "aa",
+    *			"allCanVoteNumber": 10,
+    *			"eachItemCanVoteNumber": 10
+    *		},
+    *		"numberPerPage": 0,
+    *		"currentPage": 0,
+    *		"totalNumber": 0,
+    *		"totalPage": 0
+	*	}
+	*
+	* @apiSuccessExample {json} Error-Response:
+	* 	HTTP/1.1 200 ok
+	* 	{
+	*  		"status": 1,
+	*  		"data": "参数为空",
+	*  		"numberPerPage": 0,
+	*  		"currentPage": 0,
+	*  		"totalNumber": 0,
+	*  		"totalPage": 0
+	*	}
+	**/
+	@RequestMapping(value="update",method = RequestMethod.POST)
+	@ResponseBody
+	public DataWrapper<Vote> update(
+			@RequestParam(value="voteId", required=true) Long voteId,
+			@ModelAttribute Vote vote
+			) {
+
+		return voteService.update(vote, voteId);
+	}
 }

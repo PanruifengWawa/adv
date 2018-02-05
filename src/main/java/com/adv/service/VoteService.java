@@ -14,5 +14,7 @@ public interface VoteService {
 	DataWrapper<Void> delete(Long voteId);
 	
 	DataWrapper<Vote> getById(Long voteId);
+	
+	DataWrapper<Vote> update(Vote vote, Long voteId);
 
 }

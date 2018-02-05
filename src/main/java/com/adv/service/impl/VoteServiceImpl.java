@@ -73,4 +73,29 @@ public class VoteServiceImpl implements VoteService {
 		return dataWrapper;
 	}
 
+	@Override
+	public DataWrapper<Vote> update(Vote vote, Long voteId) {
+		Vote voteInDB = voteRepository.findOne(voteId);
+		if (voteInDB == null) {
+			throw new MyException("投票项目不存在");
+		}
+		if (vote.getAllCanVoteNumber() != null && vote.getAllCanVoteNumber() > 0) {
+			voteInDB.setAllCanVoteNumber(vote.getAllCanVoteNumber());
+		}
+		
+		if (vote.getEachItemCanVoteNumber() != null && vote.getEachItemCanVoteNumber() > 0) {
+			voteInDB.setEachItemCanVoteNumber(vote.getEachItemCanVoteNumber());
+		}
+		
+		try {
+			voteRepository.save(voteInDB);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MyException("数据库错误");
+		}
+		DataWrapper<Vote> dataWrapper = new DataWrapper<Vote>();
+		dataWrapper.setData(voteInDB);
+		return dataWrapper;
+	}
+
 }

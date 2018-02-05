@@ -19,6 +19,7 @@ import com.adv.service.WXWallService;
 import com.adv.utils.DataWrapper;
 import com.adv.utils.JSONUtil;
 import com.adv.utils.WSMessage;
+import com.adv.websocket.AdminServer;
 import com.adv.websocket.TerminalServer;
 
 @Service
@@ -93,7 +94,11 @@ public class WXWallServiceImpl implements WXWallService {
 				WSMessage<List<Message>> wsMessage = new WSMessage<List<Message>>();
 				wsMessage.setCode(9);
 				wsMessage.setData(messages);
-				TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+				
+				String message2 = JSONUtil.obj2Json(wsMessage);
+				TerminalServer.sendMessageToAll(message2);
+				AdminServer.sendMessageToAll(message2);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -139,7 +144,9 @@ public class WXWallServiceImpl implements WXWallService {
 			WSMessage<List<Message>> wsMessage = new WSMessage<List<Message>>();
 			wsMessage.setCode(9);
 			wsMessage.setData(list);
-			TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+			String message = JSONUtil.obj2Json(wsMessage);
+			TerminalServer.sendMessageToAll(message);
+			AdminServer.sendMessageToAll(message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

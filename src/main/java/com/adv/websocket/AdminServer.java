@@ -106,11 +106,13 @@ public class AdminServer  {
 			Parameters.canAnswer = 1;
 			Parameters.answer.clear();
 			TerminalServer.sendMessageToAll(message);
+			AdminServer.sendMessageToAll(message);
 			break;
 			
 		case 6:
 			Parameters.canAnswer = 0;
 			TerminalServer.sendMessageToAll(message);
+			AdminServer.sendMessageToAll(message);
 			break;
 		default:
 			break;

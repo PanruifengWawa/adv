@@ -201,6 +201,20 @@ public class TerminalServer  {
 		}
 	}
 	
+	public static boolean closeByMac(String mac) {
+		TerminalServer terminalServer = terminals.get(mac);
+		if (terminalServer == null) {
+			return false;
+		}
+		try {
+			terminalServer.session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public static void sendMessageToAll(String message) {
 		for(TerminalServer terminalServer: terminals.values()) {
 			terminalServer.sendMessage(message);

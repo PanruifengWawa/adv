@@ -3,6 +3,8 @@ package com.adv.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.adv.exceptions.MyException;
@@ -23,7 +25,9 @@ public class TerminalServiceImpl implements TerminalService {
 	@Override
 	public DataWrapper<List<Terminal>> getTerminalList() {
 		DataWrapper<List<Terminal>> dataWrapper = new DataWrapper<List<Terminal>>();
-		List<Terminal> list = terminalRepository.findAll();
+		Sort sort = new Sort(Direction.ASC, "id");
+
+		List<Terminal> list = terminalRepository.findAll(sort);
 		for(Terminal terminal: list) {
 			TerminalServer.getTerminalState(terminal);
 		}
@@ -66,6 +70,7 @@ public class TerminalServiceImpl implements TerminalService {
 		terminal.setMac(mac);
 		terminal.setName(name);
 		terminal.setSrc("");
+		terminal.setId(null);
 		try {
 			terminalRepository.save(terminal);
 		} catch (Exception e) {

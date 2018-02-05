@@ -23,6 +23,7 @@ import com.adv.service.VoteItemService;
 import com.adv.utils.DataWrapper;
 import com.adv.utils.JSONUtil;
 import com.adv.utils.WSMessage;
+import com.adv.websocket.AdminServer;
 import com.adv.websocket.TerminalServer;
 
 @Service
@@ -186,8 +187,9 @@ public class VoteItemServiceImpl implements VoteItemService {
 			WSMessage<Long> wsMessage = new WSMessage<Long>();
 			wsMessage.setCode(4);
 			wsMessage.setData(voteId);
-
-			TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+			String message = JSONUtil.obj2Json(wsMessage);
+			TerminalServer.sendMessageToAll(message);
+			AdminServer.sendMessageToAll(message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

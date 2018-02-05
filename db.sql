@@ -107,3 +107,12 @@ src varchar(512) not null,
 app_name varchar(128) not null,
 description text
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- v4
+alter table terminal add column add_time datetime not NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+-- v5 -- no-added
+alter table terminal drop column add_time;
+alter table terminal add column id serial  not null unique;

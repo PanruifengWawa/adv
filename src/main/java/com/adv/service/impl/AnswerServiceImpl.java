@@ -17,6 +17,7 @@ import com.adv.service.AnswerService;
 import com.adv.utils.DataWrapper;
 import com.adv.utils.JSONUtil;
 import com.adv.utils.WSMessage;
+import com.adv.websocket.AdminServer;
 import com.adv.websocket.TerminalServer;
 
 @Service
@@ -111,7 +112,9 @@ public class AnswerServiceImpl implements AnswerService {
 				WSMessage<Terminal> wsMessage = new WSMessage<Terminal> ();
 				wsMessage.setCode(8);
 				wsMessage.setData(terminal);
-				TerminalServer.sendMessageToAll(JSONUtil.obj2Json(wsMessage));
+				String message = JSONUtil.obj2Json(wsMessage);
+				TerminalServer.sendMessageToAll(message);
+				AdminServer.sendMessageToAll(message);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

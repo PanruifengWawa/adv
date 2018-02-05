@@ -1,5 +1,6 @@
 package com.adv.models;
 
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +15,20 @@ public class Terminal {
 	private String name;
 	
 	private String src;
+	private Long id;
 	
 	
+	
+	
+	@Basic
+    @Column(name = "id")
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Basic
     @Column(name = "src")
 	public String getSrc() {
